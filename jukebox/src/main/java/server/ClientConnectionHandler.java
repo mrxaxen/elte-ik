@@ -30,7 +30,7 @@ public class ClientConnectionHandler extends Thread {
                 String msg = connection.getMessage();
                 String cmd = msg.split(" ")[0];
                 msg = msg.substring(cmd.length()).trim();
-                System.out.println("Substring: " + msg);
+//                System.out.println("Substring: " + msg);
                 switch (cmd) {
                     case "add":
                         add(msg,connection);
@@ -48,12 +48,16 @@ public class ClientConnectionHandler extends Thread {
                         },1000);
                         break;
                     case "change":
+                        change(msg);
                         break;
                     case "stop":
+                        stopSong(Integer.parseInt(msg));
                         break;
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (RuntimeException e) {
+                System.err.println("Something mishapd' (o.o) Try again!");
             }
         }
     }
@@ -90,6 +94,8 @@ public class ClientConnectionHandler extends Thread {
 
         new Thread(()->{
             Song song = songs.get(title);
+            song.setTempo(tempo);
+            song.isPlaying = true;
             songsPlaying.add(song);
             int id = songsPlaying.indexOf(song);
             System.out.println("Server playing :" + song.getTitle());
@@ -102,33 +108,40 @@ public class ClientConnectionHandler extends Thread {
 //                System.out.println(note + " " + lyrics.get(notes.indexOf(note)));
 //            });
             int count = 0;
-            for (int i = 0; i < notes.size(); i++) {
-                Note note = notes.get(i);
-                if (!note.note.equals("REP")) {
-                    String word;
-                    if(note.note.equals("R")) {
-                        word = "???";
+            int size = notes.size();
+            for (int i = 0; i < size; i++) {
+                if(!song.isPlaying) {
+                    break;
+                }
+                synchronized (song) {
+                    notes = song.getTransposed();
+                    Note note = notes.get(i);
+                    if (!note.note.equals("REP")) {
+                        String word;
+                        if(note.note.equals("R")) {
+                            word = "???";
+                        } else {
+                            word = lyrics.pop();
+                        }
+                        int delay = Integer.parseInt(note.length)*song.getTempo();
+                        System.out.println(note + " " + word);
+                        connection.sendMessage(String.join(" ",note.note, word));
+                        try {
+                            Thread.sleep(delay);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        word = lyrics.pop();
-                    }
-                    int delay = Integer.parseInt(note.length)*tempo;
-                    System.out.println(note + " " + word);
-                    connection.sendMessage(String.join(" ",note.note, word));
-                    try {
-                        Thread.sleep(delay);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    String[] split = note.length.split(";");
-                    int repNotes = Integer.parseInt(split[0]);
-                    int repCount = Integer.parseInt(split[1]);
-                    if(count == repCount) {
-                        count = 0;
-                        continue;
-                    } else {
-                        i = i-repNotes-1;
-                        count++;
+                        String[] split = note.length.split(";");
+                        int repNotes = Integer.parseInt(split[0]);
+                        int repCount = Integer.parseInt(split[1]);
+                        if(count == repCount) {
+                            count = 0;
+                            continue;
+                        } else {
+                            i = i-repNotes-1;
+                            count++;
+                        }
                     }
                 }
             }
@@ -142,7 +155,20 @@ public class ClientConnectionHandler extends Thread {
         }).start();
     }
 
-    public static void change() {
+    public static void change(String msg) throws RuntimeException {
+        String[] split = msg.split(" ");
+        int id = Integer.parseInt(split[0]);
+        int tempo = Integer.parseInt(split[1]);
+        int transpose = Integer.parseInt(split[2]);
 
+        Song song = songsPlaying.get(id);
+        synchronized (song) {
+            song.setTempo(tempo);
+            song.transposeSong(transpose);
+        }
+    }
+
+    public static void stopSong(int id) {
+        songsPlaying.get(id).isPlaying = false;
     }
 }

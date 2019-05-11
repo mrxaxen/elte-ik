@@ -35,6 +35,8 @@ public class Song implements Serializable {
     private ArrayList<Note> notes;
     private ArrayList<String> lyrics = new ArrayList<>();
     private ArrayList<Note> transposed;
+    private int tempo;
+    public boolean isPlaying;
 
     public Song(String title) {
         this.title = title;
@@ -111,35 +113,45 @@ public class Song implements Serializable {
         return lyrics;
     }
 
-    public ArrayList<Note> transposeSong(int transpose) {
-        if(transpose != 0) {
+    public void setTempo(int tempo) {
+        this.tempo = tempo;
+    }
+
+    public int getTempo() {
+        return tempo;
+    }
+
+    public ArrayList<Note> getTransposed() {
+        return transposed;
+    }
+
+    public synchronized ArrayList<Note> transposeSong(int transpose) {
             transposed = new ArrayList<>();
             notes.forEach((note)-> {
                 Note newNote = new Note(note.note,note.length);
                 transposed.add(newNote);
             });
-            transposed.replaceAll((note)-> {
-                Note newNote = new Note(note.note,note.length);
-                String noteString = newNote.note;
-                int transp = 0;
-                if(newNote.note.contains("/")) {
-                    noteString = newNote.note.split("/")[0];
-                    transp = Integer.parseInt(newNote.note.split("/")[1]) + transpose;
-                    if (transp != 0) {
-                        newNote.note = noteString + "/" + transp;
+            if(transpose != 0) {
+                transposed.replaceAll((note)-> {
+                    Note newNote = new Note(note.note,note.length);
+                    String noteString;
+                    int transp = 0;
+                    if(newNote.note.contains("/")) {
+                        noteString = newNote.note.split("/")[0];
+                        transp = Integer.parseInt(newNote.note.split("/")[1]) + transpose;
+                        if (transp != 0) {
+                            newNote.note = noteString + "/" + transp;
+                        } else {
+                            return note;
+                        }
                     } else {
-                        return note;
+                        noteString = newNote.note + "/" + transpose;
+                        newNote.note = noteString;
                     }
-                } else {
-                    noteString = newNote.note + "/" + transpose;
-                    newNote.note = noteString;
-                }
-                return newNote;
-            });
+                    return newNote;
+                });
+            }
             return transposed;
-        } else {
-            return notes;
-        }
     }
 
     @Override

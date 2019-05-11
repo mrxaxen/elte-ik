@@ -49,12 +49,13 @@ public class Player implements Runnable{
                 int prevNote = 0;
                 while (true) {
                     while(message.contains("playing")) {
+                        System.out.println(message);
                         message = serverConn.getMessage();
                     }
                     msg = message.split(" ");
 
                     int note;
-                    System.out.println("Play iter: " + msg[0]);
+//                    System.out.println("Play iter: " + msg[0]);
                     if(msg[0].equals("FIN")) {
                         songsPlaying--;
                         if(songsPlaying == 0) {
@@ -76,7 +77,7 @@ public class Player implements Runnable{
                     }
 
                     piano.noteOn(note, 100);
-                    System.out.println("Lyrics:" + lyrics);
+//                    System.out.println("Lyrics:" + lyrics);
                     prevNote = note;
                     message = serverConn.getMessage();
                 }

@@ -36,7 +36,7 @@ public class Connection implements AutoCloseable{
         commIn = new Thread(()->{
             while (in.hasNextLine()) {
                 String next = in.nextLine();
-                System.out.println("Got input from server: " + next);
+//                System.out.println("Got input from server: " + next);
                 synchronized (messagesGet) {
                     messagesGet.add(next);
                     messagesGet.notifyAll();
@@ -85,7 +85,7 @@ public class Connection implements AutoCloseable{
             synchronized (messagesGet) {
                 msg = messagesGet.pop();
             }
-            System.out.println("Popping message: " + msg);
+//            System.out.println("Popping message: " + msg);
         }
         return msg;
     }
