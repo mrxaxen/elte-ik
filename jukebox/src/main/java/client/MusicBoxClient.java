@@ -9,7 +9,9 @@ import java.util.Scanner;
 public class MusicBoxClient {
 
     private static Thread player;
-
+    /*
+    * Megalovania is added by default in ClientConnectionHandler, and being played on start
+    * */
     public static void main(String[] args) {
         int port = 40000;
         String host = "127.0.0.1";
@@ -21,11 +23,11 @@ public class MusicBoxClient {
             boolean b = true;
             while (serverConn.isAlive()) {
                 if(b) {
-                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),serverConn);
-                    play("120","0",Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),serverConn);
-                    play("120","0",Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),serverConn);
-                    play("120","0",Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),serverConn);
-                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),serverConn);
+                    play("125","0",Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),serverConn);
+                    play("125","0",Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),serverConn);
+                    play("125","0",Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),serverConn);
+                    play("125","0",Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),serverConn);
+                    play("125","0",Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),serverConn);
                     b = false;
                 }
                 if(stdIn.hasNextLine()) {

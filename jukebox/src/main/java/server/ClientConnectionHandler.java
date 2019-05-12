@@ -9,18 +9,18 @@ public class ClientConnectionHandler extends Thread {
 
     private Connection connection;
     private Timer timer = new Timer();
-    private static final Vector<Song> songsPlaying = new Vector<>();
+    private final Vector<Song> songsPlaying = new Vector<>();
     private static final HashMap<String,Song> songs = new HashMap<>();
 
     public ClientConnectionHandler(Connection connection) {
-//        songs.put(Song.SONG_C4.getTitle(), Song.SONG_C4);
-//        songs.put(Song.SONG_TEST1.getTitle(), Song.SONG_TEST1);
-//        songs.put(Song.SONG_TEST2.getTitle(), Song.SONG_TEST2);
-//        songs.put(Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),Song.SONG_MEGALOVANIA_MAIN_BASE);
-//        songs.put(Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),Song.SONG_MEGALOVANIA_BASE_BASS);
-//        songs.put(Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),Song.SONG_MEGALOVANIA_BASE_LOWER);
-//        songs.put(Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),Song.SONG_MEGALOVANIA_BASE_UPPER);
-//        songs.put(Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),Song.SONG_MEGALOVANIA_MAIN_RAISED);
+        songs.put(Song.SONG_C4.getTitle(), Song.SONG_C4);
+        songs.put(Song.SONG_TEST1.getTitle(), Song.SONG_TEST1);
+        songs.put(Song.SONG_TEST2.getTitle(), Song.SONG_TEST2);
+        songs.put(Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),Song.SONG_MEGALOVANIA_MAIN_BASE);
+        songs.put(Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),Song.SONG_MEGALOVANIA_BASE_BASS);
+        songs.put(Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),Song.SONG_MEGALOVANIA_BASE_LOWER);
+        songs.put(Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),Song.SONG_MEGALOVANIA_BASE_UPPER);
+        songs.put(Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),Song.SONG_MEGALOVANIA_MAIN_RAISED);
         this.connection = connection;
     }
 
@@ -44,15 +44,15 @@ public class ClientConnectionHandler extends Thread {
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                play(m, connection);
+                                play(m, songsPlaying, connection);
                             }
                         },1000);
                         break;
                     case "change":
-                        change(msg);
+                        change(msg,songsPlaying);
                         break;
                     case "stop":
-                        stopSong(Integer.parseInt(msg));
+                        stopSong(Integer.parseInt(msg),songsPlaying);
                         break;
                 }
             } catch (InterruptedException e) {
@@ -89,7 +89,7 @@ public class ClientConnectionHandler extends Thread {
         }
     }
 
-    private static void play(String msg, Connection connection) {
+    private static void play(String msg,Vector<Song> songsPlaying, Connection connection) {
         String[] msgSplit = msg.split(" ");
         int tempo = Integer.parseInt(msgSplit[0]);
         int songTranspose = Integer.parseInt(msgSplit[1]);
@@ -154,7 +154,7 @@ public class ClientConnectionHandler extends Thread {
         }).start();
     }
 
-    public static void change(String msg) throws RuntimeException {
+    public static void change(String msg, Vector<Song> songsPlaying) throws RuntimeException {
         String[] split = msg.split(" ");
         int id = Integer.parseInt(split[0]);
         int tempo = Integer.parseInt(split[1]);
@@ -167,7 +167,7 @@ public class ClientConnectionHandler extends Thread {
         }
     }
 
-    public static void stopSong(int id) {
+    public static void stopSong(int id, Vector<Song> songsPlaying) {
         songsPlaying.get(id).isPlaying = false;
     }
 
