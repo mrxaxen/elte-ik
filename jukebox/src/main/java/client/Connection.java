@@ -9,13 +9,10 @@ import java.util.Scanner;
 public class Connection implements AutoCloseable{
 
     private final int id;
-    private boolean sendMsg;
     private Socket socket;
     private Scanner in;
     private PrintWriter out;
     private Thread commIn;
-    private Thread commOut;
-//    private LinkedList<String> messagesToSend = new LinkedList<>();
     private LinkedList<String> messagesGet = new LinkedList<>();
 
     public Connection(Socket socket) throws IOException {

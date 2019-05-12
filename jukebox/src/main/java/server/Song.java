@@ -34,9 +34,9 @@ public class Song implements Serializable {
     private String title;
     private ArrayList<Note> notes;
     private ArrayList<String> lyrics = new ArrayList<>();
-    private ArrayList<Note> transposed;
-    private int tempo;
-    public boolean isPlaying;
+    private transient ArrayList<Note> transposed;
+    private transient int tempo;
+    public transient boolean isPlaying;
 
     public Song(String title) {
         this.title = title;
@@ -99,10 +99,6 @@ public class Song implements Serializable {
             lyrics.set(i,s);
             i++;
         }
-    }
-
-    public ArrayList<Note> getNotes() {
-        return notes;
     }
 
     public String getTitle() {

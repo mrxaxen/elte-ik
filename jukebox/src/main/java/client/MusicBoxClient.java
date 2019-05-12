@@ -20,14 +20,14 @@ public class MusicBoxClient {
             player.start();
             boolean b = true;
             while (serverConn.isAlive()) {
-//                if(b) {
-//                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),serverConn);
-//                    play("120","0",Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),serverConn);
-//                    play("120","0",Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),serverConn);
-//                    play("120","0",Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),serverConn);
-//                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),serverConn);
-//                    b = false;
-//                }
+                if(b) {
+                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_BASE.getTitle(),serverConn);
+                    play("120","0",Song.SONG_MEGALOVANIA_BASE_BASS.getTitle(),serverConn);
+                    play("120","0",Song.SONG_MEGALOVANIA_BASE_LOWER.getTitle(),serverConn);
+                    play("120","0",Song.SONG_MEGALOVANIA_BASE_UPPER.getTitle(),serverConn);
+                    play("120","0",Song.SONG_MEGALOVANIA_MAIN_RAISED.getTitle(),serverConn);
+                    b = false;
+                }
                 if(stdIn.hasNextLine()) {
                     String userInput = stdIn.nextLine();
                     String[] splitInput = userInput.split(" ");

@@ -1,9 +1,11 @@
 package server;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Note {
+public class Note implements Serializable {
 
+    private static final long serialVersionUID = 10000L;
     private static final HashMap<String, Integer> noteConversionByStr = initConvStr();
     private static final HashMap<Integer, String> noteConversionByInt = initConvInt();
     String note;
